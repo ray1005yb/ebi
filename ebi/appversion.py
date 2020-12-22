@@ -36,7 +36,7 @@ def make_version_file(version_label, dockerrun=None, docker_compose=None, ebext=
     try:
         deploy_docker = os.path.join(tempd, docker_settings)
         deploy_ebext = os.path.join(tempd, DOCKEREXT_NAME)
-        shutil.copyfile(dockerrun, deploy_docker)
+        shutil.copyfile(docker_settings, deploy_docker)
         shutil.copytree(ebext, deploy_ebext)
         return shutil.make_archive(version_label, 'zip', root_dir=tempd)
     finally:
