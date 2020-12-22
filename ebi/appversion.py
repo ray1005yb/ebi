@@ -15,24 +15,28 @@ DOCKERRUN_NAME = 'Dockerrun.aws.json'
 DOCKEREXT_NAME = '.ebextensions/'
 
 
-def make_version_file(version_label, dockerrun=None, ebext=None):
+def make_version_file(version_label, dockerrun=None, docker_compose=None, ebext=None):
     """ Making zip file to upload for ElasticBeanstalk
 
     :param version_label: will be name of the created zip file
 
     * Including :param dockerrun: file as Dockerrun.aws.json
+    * Including :param docker-compose: file as dockerrun-compose.yml (for Amazon linux2)
     * Including :param exext: directory as .ebextensions/
 
     :return: File path to created zip file (current directory).
     """
     dockerrun = dockerrun or DOCKERRUN_NAME
+    # docker-compose takes precedence over dockerrun
+    docker_settings = docker_compose or dockerrun
+
     ebext = ebext or DOCKEREXT_NAME
 
     tempd = tempfile.mkdtemp()
     try:
-        deploy_dockerrun = os.path.join(tempd, DOCKERRUN_NAME)
+        deploy_docker = os.path.join(tempd, docker_settings)
         deploy_ebext = os.path.join(tempd, DOCKEREXT_NAME)
-        shutil.copyfile(dockerrun, deploy_dockerrun)
+        shutil.copyfile(docker_settings, deploy_docker)
         shutil.copytree(ebext, deploy_ebext)
         return shutil.make_archive(version_label, 'zip', root_dir=tempd)
     finally:
@@ -56,8 +60,8 @@ def upload_app_version(app_name, bundled_zip):
     return bucket, key
 
 
-def make_application_version(app_name, version, dockerrun, ebext, description):
-    bundled_zip = make_version_file(version, dockerrun=dockerrun, ebext=ebext)
+def make_application_version(app_name, version, dockerrun, docker_compose, ebext, description):
+    bundled_zip = make_version_file(version, dockerrun=dockerrun, docker_compose=docker_compose, ebext=ebext)
     try:
         bucket, key = upload_app_version(app_name, bundled_zip)
 
