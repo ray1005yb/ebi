@@ -28,6 +28,9 @@ def make_version_file(version_label, dockerrun=None, docker_compose=None, ebext=
     :return: File path to created zip file (current directory).
     """
     dockerrun = dockerrun or DOCKERRUN_NAME
+    # docker-compose takes precedence over dockerrun
+    docker_settings = docker_compose or dockerrun
+
     ebext = ebext or DOCKEREXT_NAME
 
     tempd = tempfile.mkdtemp()
