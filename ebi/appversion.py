@@ -12,6 +12,7 @@ logger = logging.getLogger('ebi')
 
 
 DOCKERRUN_NAME = 'Dockerrun.aws.json'
+DOCKER_COMPOSE_NAME = 'docker-compose.yml'
 DOCKEREXT_NAME = '.ebextensions/'
 
 
@@ -34,10 +35,17 @@ def make_version_file(version_label, dockerrun=None, docker_compose=None, ebext=
 
     tempd = tempfile.mkdtemp()
     try:
-        deploy_docker = os.path.join(tempd, docker_settings)
         deploy_ebext = os.path.join(tempd, DOCKEREXT_NAME)
-        shutil.copyfile(docker_settings, deploy_docker)
         shutil.copytree(ebext, deploy_ebext)
+
+        # docker-compose takes precedence over dockerrun
+        if docker_compose:
+            deploy_docker_compose = os.path.join(tempd, DOCKER_COMPOSE_NAME)
+            shutil.copyfile(docker_compose, deploy_docker_compose)
+        else:
+            deploy_dockerrun = os.path.join(tempd, DOCKERRUN_NAME)
+            shutil.copyfile(dockerrun, deploy_dockerrun)
+            
         return shutil.make_archive(version_label, 'zip', root_dir=tempd)
     finally:
         shutil.rmtree(tempd)
