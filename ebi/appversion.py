@@ -8,15 +8,18 @@ from ebcli.lib import s3 as ebs3
 from ebcli.lib import elasticbeanstalk
 from ebcli.objects.exceptions import NotFoundError
 
+from .copy import copy_eb_files
+
 logger = logging.getLogger('ebi')
 
 
 DOCKERRUN_NAME = 'Dockerrun.aws.json'
 DOCKER_COMPOSE_NAME = 'docker-compose.yml'
 DOCKEREXT_NAME = '.ebextensions/'
+CURRENT_DIR = ''
 
 
-def make_version_file(version_label, dockerrun=None, docker_compose=None, ebext=None):
+def make_version_file(version_label, dockerrun=None, docker_compose=None, ebext=None, ebignore=None):
     """ Making zip file to upload for ElasticBeanstalk
 
     :param version_label: will be name of the created zip file
@@ -24,6 +27,7 @@ def make_version_file(version_label, dockerrun=None, docker_compose=None, ebext=
     * Including :param dockerrun: file as Dockerrun.aws.json
     * Including :param docker-compose: file as dockerrun-compose.yml (for Amazon linux2)
     * Including :param exext: directory as .ebextensions/
+    * Including :param ebignore: file as .ebignore
 
     :return: File path to created zip file (current directory).
     """
@@ -35,6 +39,11 @@ def make_version_file(version_label, dockerrun=None, docker_compose=None, ebext=
 
     tempd = tempfile.mkdtemp()
     try:
+        if ebignore:
+            # copy_eb_files cannot overwrite directries
+            os.rmdir(tempd)
+            copy_eb_files(CURRENT_DIR, tempd, ebignore)
+
         deploy_ebext = os.path.join(tempd, DOCKEREXT_NAME)
         shutil.copytree(ebext, deploy_ebext)
 
@@ -45,7 +54,7 @@ def make_version_file(version_label, dockerrun=None, docker_compose=None, ebext=
         else:
             deploy_dockerrun = os.path.join(tempd, DOCKERRUN_NAME)
             shutil.copyfile(dockerrun, deploy_dockerrun)
-            
+
         return shutil.make_archive(version_label, 'zip', root_dir=tempd)
     finally:
         shutil.rmtree(tempd)
@@ -68,8 +77,8 @@ def upload_app_version(app_name, bundled_zip):
     return bucket, key
 
 
-def make_application_version(app_name, version, dockerrun, docker_compose, ebext, description):
-    bundled_zip = make_version_file(version, dockerrun=dockerrun, docker_compose=docker_compose, ebext=ebext)
+def make_application_version(app_name, version, dockerrun, docker_compose, ebext, ebignore, description):
+    bundled_zip = make_version_file(version, dockerrun=dockerrun, docker_compose=docker_compose, ebignore=ebignore, ebext=ebext)
     try:
         bucket, key = upload_app_version(app_name, bundled_zip)
 
