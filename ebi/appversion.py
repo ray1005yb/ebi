@@ -26,14 +26,12 @@ def make_version_file(version_label, dockerrun=None, docker_compose=None, ebext=
 
     * Including :param dockerrun: file as Dockerrun.aws.json
     * Including :param docker-compose: file as dockerrun-compose.yml (for Amazon linux2)
-    * Including :param exext: directory as .ebextensions/
+    * Including :param ebext: directory as .ebextensions/
     * Including :param ebignore: file as .ebignore
 
     :return: File path to created zip file (current directory).
     """
     dockerrun = dockerrun or DOCKERRUN_NAME
-    # docker-compose takes precedence over dockerrun
-    docker_settings = docker_compose or dockerrun
 
     ebext = ebext or DOCKEREXT_NAME
 
