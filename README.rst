@@ -42,8 +42,9 @@ options:
 * ``--prefix``: version prefix for app. It is added to timestamp.
 * ``--description``: description for this version.
 * ``--dockerrun``: File path used as ``Dockerrun.aws.json``.
-* ``--docker_compose``: File path used as ``docker-compose.yml``.
+* ``--docker-compose``: File path used as ``docker-compose.yml``.
 * ``--ebext``: Directory path used as ``.ebextensions/``
+* ``--ebignore``: After create zip file based on ``.ebignore``. ``Dockerrun.aws.json``, ``docker-compose.yml`` and ``.ebextensions`` are added to it.
 * ``--profile``: Configured profile for AWS.
 * ``--region``: region for AWS.
 
@@ -66,8 +67,9 @@ options:
 * ``--prefix``: version prefix for app. It is added to timestamp.
 * ``--description``: description for this version.
 * ``--dockerrun``: File path used as ``Dockerrun.aws.json``.
-* ``--docker_compose``: File path used as ``docker-compose.yml``.
+* ``--docker-compose``: File path used as ``docker-compose.yml``.
 * ``--ebext``: Directory path used as ``.ebextensions/``
+* ``--ebignore``: After create zip file based on ``.ebignore``. ``Dockerrun.aws.json``, ``docker-compose.yml`` and ``.ebextensions`` are added to it.
 * ``--profile``: Configured profile for AWS.
 * ``--region``: region for AWS.
 * ``--cfg``: Configuration template to use.
@@ -104,8 +106,9 @@ options:
 * ``--prefix``: version prefix for app. It is added to timestamp.
 * ``--description``: description for this version.
 * ``--dockerrun``: File path used as ``Dockerrun.aws.json``.
-* ``--docker_compose``: File path used as ``docker-compose.yml``.
+* ``--docker-compose``: File path used as ``docker-compose.yml``.
 * ``--ebext``: Directory path used as ``.ebextensions/``
+* ``--ebignore``: After create zip file based on ``.ebignore``. ``Dockerrun.aws.json``, ``docker-compose.yml`` and ``.ebextensions`` are added to it.
 * ``--profile``: Configured profile for AWS.
 * ``--region``: region for AWS.
 * ``--capacity``: Increase the number of desired instances, the minimum size, and the maximum size of the standby environment to the same as the primary environment.
@@ -120,7 +123,7 @@ To deploy app with cloning, just type it on project root::
 This will
 
 1. Create clone of master environment for next version environment.
-1. Create zip file including ``Dockerrun.aws.json`` and ``.ebextensions`` or ``docker-compose.yml`` and ``.ebextensions``
+2. Create zip file including ``Dockerrun.aws.json`` and ``.ebextensions`` or ``docker-compose.yml`` and ``.ebextensions``
 3. Uploading zip to S3 as same directory as ``awsebcli``.
 4. Deploy new version to next version (by calling ``eb deploy`` with uploaded --version)
 5. Apply master cname for deployed (next version) environment
@@ -141,8 +144,8 @@ This will
 * ``--prefix``: version prefix for app. It is added to timestamp.
 * ``--description``: description for this version.
 * ``--dockerrun``: File path used as ``Dockerrun.aws.json``.
-* ``--docker_compose``: File path used as ``docker-compose.yml``.
+* ``--docker-compose``: File path used as ``docker-compose.yml``.
 * ``--ebext``: Directory path used as ``.ebextensions/``
+* ``--ebignore``: After create zip file based on ``.ebignore``. ``Dockerrun.aws.json``, ``docker-compose.yml`` and ``.ebextensions`` are added to it.
 * ``--profile``: Configured profile for AWS.
 * ``--region``: region for AWS.
-
