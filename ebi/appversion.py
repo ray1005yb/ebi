@@ -37,6 +37,10 @@ def make_version_file_with_ebignore(version_label, dockerrun=None, docker_compos
     try:
         ignore_files = fileoperations.get_ebignore_list()
 
+        if ignore_files is None:
+            logger.info('.ebignore does not exist. Try to make a version file w/o .ebignore')
+            return make_version_file(version_label, dockerrun=dockerrun, docker_compose=docker_compose, ebext=ebext)
+
         # Dockerrun, docker-compose and ebextentions files are added to zip file later.
         ignore_files |= {DOCKERRUN_NAME, DOCKER_COMPOSE_NAME}
         ignore_ebext_files = set()
